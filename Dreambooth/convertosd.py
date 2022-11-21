@@ -197,15 +197,19 @@ def convert_text_enc_state_dict(text_enc_dict):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--half", action="store_true", help="Save weights in half precision.")
-    args = parser.parse_args()
 
-    model_path = ""
-    checkpoint_path= ""
+    parser.add_argument("--model_path", default=None, type=str, required=True, help="Path to the model to convert.")
+    parser.add_argument("--checkpoint_path", default=None, type=str, required=True, help="Path to the output model.")
+    parser.add_argument("--half", action="store_true", help="Save weights in half precision.")
+
+    args = parser.parse_args()
+    assert args.model_path is not None, "Must provide a model path!"
+
+    assert args.checkpoint_path is not None, "Must provide a checkpoint path!"
     
-    unet_path = osp.join(model_path, "unet", "diffusion_pytorch_model.bin")
-    vae_path = osp.join(model_path, "vae", "diffusion_pytorch_model.bin")
-    text_enc_path = osp.join(model_path, "text_encoder", "pytorch_model.bin")
+    unet_path = osp.join(args.model_path, "unet", "diffusion_pytorch_model.bin")
+    vae_path = osp.join(args.model_path, "vae", "diffusion_pytorch_model.bin")
+    text_enc_path = osp.join(args.model_path, "text_encoder", "pytorch_model.bin")
 
     # Convert the UNet model
     unet_state_dict = torch.load(unet_path, map_location='cpu')
