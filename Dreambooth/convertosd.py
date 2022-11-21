@@ -196,7 +196,9 @@ def convert_text_enc_state_dict(text_enc_dict):
 
 
 if __name__ == "__main__":
-    
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--half", action="store_true", help="Save weights in half precision.")
+    args = parser.parse_args()
 
     model_path = ""
     checkpoint_path= ""
@@ -222,7 +224,7 @@ if __name__ == "__main__":
 
     # Put together new checkpoint
     state_dict = {**unet_state_dict, **vae_state_dict, **text_enc_dict}
-    
-    state_dict = {k:v.half() for k,v in state_dict.items()}
+    if args.half:
+        state_dict = {k:v.half() for k,v in state_dict.items()}
     state_dict = {"state_dict": state_dict}
     torch.save(state_dict, checkpoint_path)
